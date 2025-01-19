@@ -1,3 +1,10 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using TodoApp.Data;
+using TodoApp.Dtos;
+using TodoApp.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace TodoApp.Controllers 
 {
     [Route("api/[controller]")]
@@ -17,7 +24,7 @@ namespace TodoApp.Controllers
         public async Task<ActionResult<IEnumerable<TodoReadDto>>> GetTodoItems()
         {
             var todoItems = await _context.TodoItems.ToListAsync();
-            if (todoItems is null) return HttpException.NotFound();
+            if (todoItems is null) return NotFound();
 
             return Ok(_mapper.Map<IEnumerable<TodoReadDto>>(todoItems));
         }
@@ -26,7 +33,7 @@ namespace TodoApp.Controllers
         public async Task<ActionResult<TodoReadDto>> GetTodoItem(int id)
         {
             var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem is null) return HttpException.NotFound();
+            if (todoItem is null) return NotFound();
 
             return Ok(_mapper.Map<TodoReadDto>(todoItem));
         }
@@ -45,7 +52,7 @@ namespace TodoApp.Controllers
         public async Task<ActionResult<TodoReadDto>> UpdateTodoItem(int id, TodoCreateUpdateDto todoCreateUpdateDto)
         {
             var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem is null) return HttpException.NotFound();
+            if (todoItem is null) return NotFound();
 
             _mapper.Map(todoCreateUpdateDto, todoItem);
             await _context.SaveChangesAsync();
@@ -57,7 +64,7 @@ namespace TodoApp.Controllers
         public async Task<ActionResult> DeleteTodoItem(int id)
         {
             var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem is null) return HttpException.NotFound();
+            if (todoItem is null) return NotFound();
 
             _context.TodoItems.Remove(todoItem);
             await _context.SaveChangesAsync();
